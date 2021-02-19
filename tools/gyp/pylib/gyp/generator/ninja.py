@@ -46,7 +46,7 @@ generator_default_variables = {
     # the start of a string, while $| is used for variables that can appear
     # anywhere in a string.
     "INTERMEDIATE_DIR": "$!INTERMEDIATE_DIR",
-    "SHARED_INTERMEDIATE_DIR": "$!PRODUCT_DIR/gen",
+    "SHARED_INTERMEDIATE_DIR": "$!PRODUCT_DIR/$|OBJ/gen",
     "PRODUCT_DIR": "$!PRODUCT_DIR",
     "CONFIGURATION_NAME": "$|CONFIGURATION_NAME",
     # Special variables that may be used by gyp 'rule' targets.
@@ -288,6 +288,12 @@ class NinjaWriter(object):
 
         CONFIGURATION_NAME = "$|CONFIGURATION_NAME"
         path = path.replace(CONFIGURATION_NAME, self.config_name)
+
+        obj = "obj"
+        if self.toolset != "target":
+            obj += "." + self.toolset
+
+        path = path.replace("$|OBJ", obj)
 
         return path
 
